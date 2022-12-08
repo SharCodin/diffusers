@@ -163,20 +163,20 @@ class FlaxStableDiffusionPipeline(FlaxDiffusionPipeline):
         else:
             has_nsfw_concepts = self._get_has_nsfw_concepts(features, safety_model_params)
 
-        images_was_copied = False
-        for idx, has_nsfw_concept in enumerate(has_nsfw_concepts):
-            if has_nsfw_concept:
-                if not images_was_copied:
-                    images_was_copied = True
-                    images = images.copy()
+        # images_was_copied = False
+        # for idx, has_nsfw_concept in enumerate(has_nsfw_concepts):
+        #     # if has_nsfw_concept:
+        #     #     if not images_was_copied:
+        #     #         images_was_copied = True
+        #     #         images = images.copy()
 
-                # images[idx] = np.zeros(images[idx].shape, dtype=np.uint8)  # black image
+        #         # images[idx] = np.zeros(images[idx].shape, dtype=np.uint8)  # black image
 
-            if any(has_nsfw_concepts):
-                warnings.warn(
-                    "Potential NSFW content was detected in one or more images. A black image will be returned"
-                    " instead. Try again with a different prompt and/or seed."
-                )
+        #     if any(has_nsfw_concepts):
+        #         warnings.warn(
+        #             "Potential NSFW content was detected in one or more images. A black image will be returned"
+        #             " instead. Try again with a different prompt and/or seed."
+        #         )
 
         return images, has_nsfw_concepts
 
@@ -368,25 +368,25 @@ class FlaxStableDiffusionPipeline(FlaxDiffusionPipeline):
                 neg_prompt_ids,
             )
 
-        if self.safety_checker is not None:
-            safety_params = params["safety_checker"]
-            images_uint8_casted = (images * 255).round().astype("uint8")
-            num_devices, batch_size = images.shape[:2]
+        # if self.safety_checker is not None:
+        #     safety_params = params["safety_checker"]
+        #     images_uint8_casted = (images * 255).round().astype("uint8")
+        #     num_devices, batch_size = images.shape[:2]
 
-            images_uint8_casted = np.asarray(images_uint8_casted).reshape(num_devices * batch_size, height, width, 3)
-            images_uint8_casted, has_nsfw_concept = self._run_safety_checker(images_uint8_casted, safety_params, jit)
-            images = np.asarray(images)
+        #     images_uint8_casted = np.asarray(images_uint8_casted).reshape(num_devices * batch_size, height, width, 3)
+        #     images_uint8_casted, has_nsfw_concept = self._run_safety_checker(images_uint8_casted, safety_params, jit)
+        #     images = np.asarray(images)
 
-            # block images
-            if any(has_nsfw_concept):
-                for i, is_nsfw in enumerate(has_nsfw_concept):
-                    if is_nsfw:
-                        images[i] = np.asarray(images_uint8_casted[i])
+        #     # block images
+        #     if any(has_nsfw_concept):
+        #         for i, is_nsfw in enumerate(has_nsfw_concept):
+        #             if is_nsfw:
+        #                 images[i] = np.asarray(images_uint8_casted[i])
 
-            images = images.reshape(num_devices, batch_size, height, width, 3)
-        else:
-            images = np.asarray(images)
-            has_nsfw_concept = False
+        #     images = images.reshape(num_devices, batch_size, height, width, 3)
+        # else:
+        images = np.asarray(images)
+        has_nsfw_concept = False
 
         if not return_dict:
             return (images, has_nsfw_concept)

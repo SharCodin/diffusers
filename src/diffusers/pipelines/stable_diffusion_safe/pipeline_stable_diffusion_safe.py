@@ -354,8 +354,7 @@ class StableDiffusionPipelineSafe(DiffusionPipeline):
         return text_embeddings
 
     def run_safety_checker(self, image, device, dtype, enable_safety_guidance):
-        if self.safety_checker is not None:
-            pass
+        # if self.safety_checker is not None:
             # safety_checker_input = self.feature_extractor(self.numpy_to_pil(image), return_tensors="pt").to(device)
             # image, has_nsfw_concept = self.safety_checker(
             #     images=image, clip_input=safety_checker_input.pixel_values.to(dtype)
